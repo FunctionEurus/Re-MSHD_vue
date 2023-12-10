@@ -1,5 +1,7 @@
 <template>
-  <n-space vertical>
+  <n-space vertical style="margin-top: 5%">
+    <h3>在此处上传文件：<br /></h3>
+    <h4>（数据格式支持json，媒体格式支持MP3、mp4、jpg等）</h4>
     <n-card title="文件列表" style="width: 350px; margin-top: 5%">
       <n-upload
         multiple

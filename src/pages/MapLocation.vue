@@ -1,7 +1,12 @@
 <template>
-  <n-button @click="show">show</n-button>
-  <n-space vertical>
-    <div id="map" style="width: 1000px; height: 650px"></div>
+  <n-space vertical style="margin-top: 2%">
+    <n-space>
+      <h3>结合地图可视化查看震情信息：</h3>
+      <n-button @click="show">查看</n-button>
+    </n-space>
+    <n-space>
+      <div id="map" style="width: 1000px; height: 650px"></div>
+    </n-space>
   </n-space>
 </template>
 

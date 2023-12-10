@@ -1,13 +1,16 @@
 <template>
-  <n-space vertical style="width: 600px">
-    <n-radio-group v-model:value="choice" name="radiobuttongroup">
-      <n-radio-button
-        v-for="field in fields"
-        :key="field.value"
-        :value="field.value"
-        :label="field.label"
-      />
-    </n-radio-group>
+  <n-space vertical style="width: 600px; margin-top: 5%">
+    <n-space>
+      <h3>查看分析图表：</h3>
+      <n-radio-group v-model:value="choice" name="radiobuttongroup">
+        <n-radio-button
+          v-for="field in fields"
+          :key="field.value"
+          :value="field.value"
+          :label="field.label"
+        />
+      </n-radio-group>
+    </n-space>
     <!--<div id="locationchart" style="width: 600px; height: 300px"></div>-->
     <!--<div id="sourcechart" style="margin-top: 5%; width: 600px; height: 300px"></div>-->
     <div id="chartContainer" style="width: 600px; height: 500px"></div>
@@ -31,14 +34,20 @@ const fields = [
   {
     value: 'carrier',
     label: '载体'
-  },
+  }
 ]
 
 const choice = ref('')
 
 onMounted(() => {
+  let chartInstance = echarts.init(document.getElementById('chartContainer'))
+
   watchEffect(() => {
-    let chartInstance = echarts.init(document.getElementById('chartContainer'))
+    // 销毁旧的图表实例
+    chartInstance.dispose()
+
+    // 创建新的图表实例
+    chartInstance = echarts.init(document.getElementById('chartContainer'))
 
     if (choice.value === 'location') {
       ApiService.getDisasters().then((response) => {

@@ -1,5 +1,6 @@
 <template>
-  <n-space vertical>
+  <n-space vertical style="margin-top: 5%;">
+    <h3>请输入所要删除记录的id：</h3>
     <n-space justify="center">
       <n-input-number v-model:value="value" clearable />
       <n-button @click="del">删除</n-button>

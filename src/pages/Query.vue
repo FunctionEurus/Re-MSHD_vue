@@ -1,12 +1,12 @@
 <template>
-  <n-space vertical>
+  <n-space vertical style="margin-top: 5%">
     <n-space vertical>
-      <h3># 查询单条记录</h3>
+      <h3># 查询单条记录：</h3>
       <n-space>
         <n-input-number v-model:value="id" clearable />
         <n-button @click="findone">查询</n-button>
       </n-space>
-      <h3># 查询所有记录</h3>
+      <h3># 查询所有记录：</h3>
       <n-card
         class="card"
         title="查询结果:"
@@ -46,6 +46,8 @@
           <n-switch v-model:value="tableorcard" />
           <h3>表格</h3>
           <n-button @click="findall">查询全部</n-button>
+          <n-button @click="exportjson">导出为json</n-button>
+          <n-button @click="exportcsv">导出为csv</n-button>
         </n-space>
       </n-space>
       <n-data-table
@@ -210,6 +212,78 @@ export default defineComponent({
             response.data.disaster_code
         }
       })
+    },
+    exportjson() {
+      ApiService.getDisasters().then((response) => {
+        // 获取数据并按照id升序排序
+        const sortedData = response.data.sort((a, b) => a.id - b.id)
+
+        // 将数据转换为 JSON 字符串
+        const jsonData = JSON.stringify(sortedData, null, 2)
+
+        // 创建 Blob 对象
+        const blob = new Blob([jsonData], { type: 'application/json' })
+
+        // 创建链接
+        const url = URL.createObjectURL(blob)
+
+        // 创建下载链接
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'data.json'
+
+        // 添加到页面并触发点击事件
+        document.body.appendChild(a)
+        a.click()
+
+        // 清理
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      })
+    },
+    exportcsv() {
+      ApiService.getDisasters().then((response) => {
+        const jsonData = response.data
+
+        // Convert JSON to CSV
+        const csvData = this.jsonToCsv(
+          jsonData.sort((a: { id: number }, b: { id: number }) => a.id - b.id)
+        )
+
+        // Create Blob object
+        const blob = new Blob([new Uint8Array([0xef, 0xbb, 0xbf]), csvData], {
+          type: 'text/csv;charset=utf-8'
+        })
+
+        // Create URL
+        const url = URL.createObjectURL(blob)
+
+        // Create download link
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'data.csv'
+
+        // Append to the document and trigger click event
+        document.body.appendChild(a)
+        a.click()
+
+        // Clean up
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      })
+    },
+
+    jsonToCsv(data: any[]) {
+      // Extract headers from the first object
+      const headers = Object.keys(data[0])
+
+      // Convert data to CSV format
+      const csv = [
+        headers.join(','),
+        ...data.map((row: { [x: string]: any }) => headers.map((header) => row[header]).join(','))
+      ].join('\n')
+
+      return csv
     }
   },
   setup() {
